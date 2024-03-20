@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,18 +25,16 @@ public class UserController {
         return userService.getAll();
     }
 
-    @PostMapping
-    public void setuser(@RequestBody UserEntry user){
-        userService.saveEntry(user);
-    }
 
-    @PutMapping("/{username}")
-    public UserEntry updateUser(@RequestBody UserEntry user,@PathVariable String username){
+
+    @PutMapping()
+    public UserEntry updateUser(@RequestBody UserEntry user){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntry gotUser = userService.findByUsername(username);
         if(gotUser!=null){
             gotUser.setUsername(user.getUsername());
             gotUser.setPassword(user.getPassword());
-            userService.saveEntry(gotUser);
+            userService.saveNewEntry(gotUser);
         }
         return gotUser;
     }

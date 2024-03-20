@@ -7,6 +7,7 @@ import com.example.journamApp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,9 +21,20 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
+    public void saveNewEntry(UserEntry user){
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+        }catch(Exception e){
+            log.error("Exception",e);
+        }
+    }
     public void saveEntry(UserEntry user){
         try {
+
             userRepository.save(user);
         }catch(Exception e){
             log.error("Exception",e);

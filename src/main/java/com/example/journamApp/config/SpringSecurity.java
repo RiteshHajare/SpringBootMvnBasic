@@ -29,8 +29,8 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/journal/**").hasRole("USER")
-                        .requestMatchers("/user").permitAll()
+                        .requestMatchers("/journal/**","/user/**").hasRole("USER")
+                        .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated())
                     .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                     .build();
